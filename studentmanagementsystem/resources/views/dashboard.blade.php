@@ -49,17 +49,17 @@
                 <!-- Total Students -->
                 <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
                     <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider mb-1">Total Students</h3>
-                    <p class="text-3xl font-bold text-gray-800">1,245</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $studentsCount }}</p>
                 </div>
                 <!-- Total Courses -->
                 <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
                     <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider mb-1">Total Courses</h3>
-                    <p class="text-3xl font-bold text-gray-800">42</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $coursesCount }}</p>
                 </div>
                 <!-- Other Stat -->
                 <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
-                    <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider mb-1">Active Staff</h3>
-                    <p class="text-3xl font-bold text-gray-800">86</p>
+                    <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider mb-1">Active Students</h3>
+                    <p class="text-3xl font-bold text-gray-800">{{ $activeStudentsCount }}</p>
                 </div>
             </div>
 
@@ -67,7 +67,7 @@
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                     <h2 class="text-lg font-semibold text-gray-800">Latest Students</h2>
-                    <a href="#" class="text-indigo-600 text-sm font-medium hover:underline">View All</a>
+                    <a href="{{ route('students.index') }}" class="text-indigo-600 text-sm font-medium hover:underline">View All</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -80,33 +80,30 @@
                             </tr>
                         </thead>
                         <tbody class="text-gray-700 text-sm">
+                            @forelse($latestStudents as $student)
                             <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                                 <td class="py-3 px-6 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">JS</div>
-                                    <span class="font-medium">John Smith</span>
+                                    @php
+                                        $initials = strtoupper(substr($student->first_name, 0, 1) . substr($student->last_name, 0, 1));
+                                    @endphp
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">{{ $initials }}</div>
+                                    <span class="font-medium">{{ $student->first_name }} {{ $student->last_name }}</span>
                                 </td>
-                                <td class="py-3 px-6 text-gray-500">john.smith@example.com</td>
-                                <td class="py-3 px-6">Oct 24, 2026</td>
-                                <td class="py-3 px-6"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">Computer Science</span></td>
-                            </tr>
-                            <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                                <td class="py-3 px-6 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-xs">ED</div>
-                                    <span class="font-medium">Emily Davis</span>
+                                <td class="py-3 px-6 text-gray-500">{{ $student->email }}</td>
+                                <td class="py-3 px-6">{{ $student->created_at->format('M d, Y') }}</td>
+                                <td class="py-3 px-6">
+                                    @if($student->course)
+                                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">{{ $student->course->name }}</span>
+                                    @else
+                                        <span class="text-gray-400">—</span>
+                                    @endif
                                 </td>
-                                <td class="py-3 px-6 text-gray-500">emily.d@example.com</td>
-                                <td class="py-3 px-6">Oct 23, 2026</td>
-                                <td class="py-3 px-6"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium">Mathematics</span></td>
                             </tr>
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="py-3 px-6 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">MW</div>
-                                    <span class="font-medium">Michael Wilson</span>
-                                </td>
-                                <td class="py-3 px-6 text-gray-500">m.wilson@example.com</td>
-                                <td class="py-3 px-6">Oct 22, 2026</td>
-                                <td class="py-3 px-6"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-medium">Physics</span></td>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="py-8 px-6 text-center text-gray-500">No students yet. <a href="{{ route('students.create') }}" class="text-indigo-600 hover:underline">Add one</a>.</td>
                             </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Student;
+use App\Models\Course;
 
 class AdminController extends Controller
 {
@@ -75,8 +77,12 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        
-        return view('dashboard');
+        $studentsCount = Student::count();
+        $coursesCount = Course::count();
+        $activeStudentsCount = Student::where('status', 'active')->count();
+        $latestStudents = Student::with('course')->latest('id')->take(5)->get();
+
+        return view('dashboard', compact('studentsCount', 'coursesCount', 'activeStudentsCount', 'latestStudents'));
     }
 
     public function logout(Request $request)
